@@ -7,7 +7,7 @@ SERVICE_NAME="cloud-sync-${SITE}.service"
 TIMER_NAME="cloud-sync-${SITE}.timer"
 
 BENCH_PATH="/home/frappe/frappe-bench"
-PYTHON_BENCH="/home/frappe/frappe-env/bin/bench"
+PYTHON_BENCH="/home/frappe/env/bin/bench"
 
 # Create service file
 sudo tee /etc/systemd/system/$SERVICE_NAME > /dev/null <<EOF
