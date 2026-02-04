@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Ask for site name
-read -p "🌐 Enter the site name for sales sync (e.g., labmaster.local): " SITE
+read -p "Enter the site name for sales sync (e.g., labmaster.local): " SITE
 
 # Derived names for sales
 SERVICE_NAME="sales-sync-${SITE}.service"
@@ -27,13 +27,13 @@ EOF
 # Create systemd timer file
 sudo tee /etc/systemd/system/$TIMER_NAME > /dev/null <<EOF
 [Unit]
-Description=Run Frappe Sales Sync for $SITE every 5 minutes
+Description=Run Frappe Sales Sync for $SITE every 1 minutes
 
 [Timer]
 OnBootSec=1min
-OnUnitActiveSec=5min
+OnUnitActiveSec=1min
 Persistent=true
-
+Unit=$SERVICE_NAME 
 [Install]
 WantedBy=timers.target
 EOF

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🌐 Enter the site name for cloud sync (e.g., labmaster.local):"
+echo "Enter the site name for cloud sync (e.g., labmaster.local):"
 read SITE
 
 SERVICE_NAME="cloud-sync-${SITE}.service"
@@ -29,8 +29,9 @@ Description=Run Frappe Cloud Sync for $SITE every 5 minutes
 
 [Timer]
 OnBootSec=1min
-OnUnitActiveSec=5min
+OnUnitActiveSec=1min
 Persistent=true
+Unit=$SERVICE_NAME   
 
 [Install]
 WantedBy=timers.target
@@ -41,6 +42,6 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now $TIMER_NAME
 sudo systemctl restart $TIMER_NAME
 
-echo "Service and timer for update created for site: $SITE"
+echo "✅ Service and timer created for site: $SITE"
 echo "Service: $SERVICE_NAME"
 echo "Timer: $TIMER_NAME"
