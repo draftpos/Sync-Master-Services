@@ -41,6 +41,6 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now $TIMER_NAME
 sudo systemctl restart $TIMER_NAME
 
-echo "✅ Service and timer created for site: $SITE"
+echo "Service and timer for update created for site: $SITE"
 echo "Service: $SERVICE_NAME"
 echo "Timer: $TIMER_NAME"
