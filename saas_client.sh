@@ -1,51 +1,49 @@
 #!/bin/bash
 
 # Ask for site name
-read -p "Enter the site name (e.g., labmaster.local): " SITE
+read -p "Enter the site name for sales sync (e.g., labmaster.local): " SITE
 
-# Names
-SERVICE_NAME="saas-${SITE}.service"
-TIMER_NAME="saas-${SITE}.timer"
+# Derived names for sales
+SERVICE_NAME="sales-sync-${SITE}.service"
+TIMER_NAME="sales-sync-${SITE}.timer"
 
 # Paths
-BENCH_PATH="$HOME/Documents/frappe-bench"
-BENCH_BIN="$BENCH_PATH/env/bin/bench"
-RUN_USER="$(whoami)"
+BENCH_PATH="/home/frappe/frappe-bench"
+PYTHON_BENCH="/home/frappe/env/bin/bench"
 
-echo "Creating systemd service for site: $SITE"
-
-# Create systemd service
+# Create systemd service file
 sudo tee /etc/systemd/system/$SERVICE_NAME > /dev/null <<EOF
 [Unit]
-Description=Frappe SASS Client Sync for $SITE
+Description=Frappe Sales Sync Job for $SITE
 After=network.target
 
 [Service]
 Type=oneshot
-User=$RUN_USER
+User=frappe
 WorkingDirectory=$BENCH_PATH
-ExecStart=$BENCH_BIN --site $SITE execute sass_client.utils.client_sync.sync_to_main_app
+ExecStart=$PYTHON_BENCH --site $SITE execute sass_client.utils.client_sync.sync_to_main_app
 EOF
 
-# Create systemd timer
+# Create systemd timer file
 sudo tee /etc/systemd/system/$TIMER_NAME > /dev/null <<EOF
 [Unit]
-Description=Run SASS Client Sync for $SITE every 1 minute
+Description=Run Frappe SAAS Sync for $SITE every 1 minutes
 
 [Timer]
 OnBootSec=1min
 OnUnitActiveSec=1min
 Persistent=true
-Unit=$SERVICE_NAME
-
+Unit=$SERVICE_NAME 
 [Install]
 WantedBy=timers.target
 EOF
 
-# Reload systemd and start timer
+# Reload systemd, enable and start timer
 sudo systemctl daemon-reload
 sudo systemctl enable --now $TIMER_NAME
+sudo systemctl restart $TIMER_NAME
 
-echo "✅ SASS Client sync scheduled successfully!"
+# Output success info
+echo "✅ Sales sync service and timer created for site: $SITE"
 echo "Service: $SERVICE_NAME"
-echo "Timer:   $TIMER_NAME"
+echo "Timer: $TIMER_NAME"
